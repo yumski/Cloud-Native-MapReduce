@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+option go_package = "omscs6211/mapreduce";
+
+package mapreduce;
+
+service MapReduce {
+  // Check if the worker is alive.
+  rpc CheckStatus(CheckRequest) returns (CheckResponse) {}
+
+  // Map service.
+  rpc Map(MapRequest) returns (MapResponse) {}
+
+  // Reduce service.
+  rpc Reduce(ReduceRequest) returns (ReduceResponse) {}
+}
+
+// Check worker status request message.
+message CheckRequest {
+  string message = 1;
+}
+
+// Check worker status response message.
+message CheckResponse {
+  enum ServingStatus{
+    IDLE = 0;
+    MAPPING = 1;
+    REDUCING = 2;
+  }
+  ServingStatus Status = 1;
+}
+
+// shard file information.
+message ShardInfo {
+  string FileName = 1;
+  int32 Start = 2;
+  int32 End = 3;
+}
+
+// Map request message.
+message MapRequest {
+  string UserId = 1;
+  int32 ShardId = 2;
+  int32 JobId = 3;
+  int32 NumMapTasks = 4;
+  int32 NumReduceTasks = 5;
+  string ContainerName = 6;
+  string MapperFunc = 7;
+  string WorkerId = 8;
+  repeated ShardInfo ShardFiles = 9;
+}
+
+// Map response message, returns the intermediate files.
+message MapResponse {
+  repeated string IntermediateFiles = 1;
+}
+
+// Reduce request message.
+message ReduceRequest {
+  string UserId = 1;
+  int32 ReducerId = 2;
+  int32 JobId = 3;
+  string ReducerFunc = 4;
+  string WorkerId = 5;
+  repeated string IntermediateFiles = 6;
+}
+
+// Reduce response message.
+message ReduceResponse {
+  string OutputFile = 1;
+}

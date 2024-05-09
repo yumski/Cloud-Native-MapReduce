@@ -1,0 +1,11 @@
+{
+    "UserID": "Team17",
+    "NumMapTasks": 20,
+    "NumReduceTasks": 5,
+    "ContainerName": "demo-text1",
+    "InputFilesDir": "./demo-text1",
+    "OutputFilesDir": "systems_project_output_validation/validate/outputs/",
+    "MapperFunc": "mapper.py",
+    "ReducerFunc": "reducer.py",
+    "Url": "http://52.149.49.115/mapreduce"
+}

@@ -1,0 +1,27 @@
+FROM --platform=$BUILDPLATFORM golang:latest as builder
+ARG TARGETARCH
+
+LABEL maintainer="Team 17"
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+
+RUN go mod download
+
+COPY . .
+
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} go build -a -installsuffix cgo -o main ./cmd/master
+
+FROM alpine:latest
+
+RUN apk --no-cache add ca-certificates python3
+
+
+# Define the rest of your dockerfile here
+WORKDIR /root/
+
+COPY --from=builder /app/main .
+
+CMD ["./main"]

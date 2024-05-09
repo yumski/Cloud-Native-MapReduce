@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mapreduce-configmap
+data:
+  service_dns: internal-service
+  etcd_dns: etcd.map-reduce.svc.cluster.local

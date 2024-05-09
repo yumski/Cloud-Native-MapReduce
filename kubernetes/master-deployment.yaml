@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: master-deployment
+  labels:
+    app: master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: master
+  template:
+    metadata:
+      labels:
+        app: master
+    spec:
+      containers:
+      - name: master
+        image: myresourcegroupteam17.azurecr.io/master:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        # readinessProbe:
+        #   httpGet:
+        #     path: /ready
+        #     port: 8080
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 5
+        # livenessProbe:
+        #   httpGet:
+        #     path: /live
+        #     port: 8080
+        #   initialDelaySeconds: 20
+        #   periodSeconds: 5
+        env:
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: INTERNAL_SERVICE_DNS
+          valueFrom:
+            configMapKeyRef:
+              name: mapreduce-configmap
+              key: service_dns
+        - name: ETCD_DNS
+          valueFrom:
+            configMapKeyRef:
+                name: mapreduce-configmap
+                key: etcd_dns
+        - name: FAIL
+          value: "0"
